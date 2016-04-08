@@ -1,11 +1,13 @@
 package server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import server.config.AppConfiguration;
+import server.data.model.request.MovieResource;
 import server.healthcheck.AppHealthCheck;
 
 /**
@@ -15,7 +17,6 @@ public class MainApplication extends Application<AppConfiguration>
 {
 	final static Logger logger = LoggerFactory.getLogger(MainApplication.class);
 
-
 	public static void main(String[] args) throws Exception
 	{
         new MainApplication().run(args);
@@ -24,7 +25,7 @@ public class MainApplication extends Application<AppConfiguration>
     @Override
     public String getName()
 	{
-        return "Test Server";
+        return "test-server";
     }
 
     @Override
@@ -36,6 +37,10 @@ public class MainApplication extends Application<AppConfiguration>
     @Override
     public void run(AppConfiguration configuration, Environment environment) throws Exception
 	{
+    	environment.jersey().setUrlPattern("/service/*");
+		final MovieResource resource = new MovieResource(configuration.getDefaultName());
+		environment.jersey().register(resource);
+		environment.healthChecks().register("app", new AppHealthCheck());
 		try
 		{
 			logger.info("Starting...");
@@ -48,8 +53,7 @@ public class MainApplication extends Application<AppConfiguration>
 			logger.error("Failed to initialize application, exiting...", exc);
 			throw new RuntimeException();
 		}
-
-		environment.healthChecks().register("app", new AppHealthCheck());
+		
 
         // register servlet route handlers
 		// environment.jersey().register(new YourServlet());

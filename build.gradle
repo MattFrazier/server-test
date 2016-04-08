@@ -30,6 +30,9 @@ task wrapper(type: Wrapper) {
 
 dependencies {
     compile 'io.dropwizard:dropwizard-core:0.9.2'
+    compile 'io.dropwizard:dropwizard-db:0.9.2'
+    compile 'io.dropwizard:dropwizard-jdbi:0.9.2'
+    compile 'io.dropwizard:dropwizard-jetty:0.9.2'
 }
 
 sourceSets {
@@ -44,7 +47,7 @@ sourceSets {
 }
 
 jar {
-    baseName = 'test-server'
+    baseName = 'server-test'
     version =  '1.0.0'
     manifest {
         attributes 'Main-Class': mainClassName
